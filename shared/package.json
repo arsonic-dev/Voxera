@@ -1,0 +1,12 @@
+{
+  "name": "@crossfire/shared",
+  "version": "1.0.0",
+  "author": "Ankit Kumar <https://github.com/arsonic-dev>",
+  "license": "MIT",
+  "private": true,
+  "main": "./protocol.ts",
+  "types": "./protocol.ts",
+  "exports": {
+    ".": "./protocol.ts"
+  }
+}

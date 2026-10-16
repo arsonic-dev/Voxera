@@ -1,0 +1,25 @@
+{
+  "name": "@crossfire/server",
+  "version": "1.0.0",
+  "author": "Ankit Kumar <https://github.com/arsonic-dev>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "tsx --test --test-concurrency=1 \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@crossfire/shared": "*",
+    "dotenv": "^16.4.7",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/ws": "^8.5.14",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

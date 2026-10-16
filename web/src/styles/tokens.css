@@ -1,0 +1,145 @@
+/* web/src/styles/tokens.css */
+/* Awwwards-Level Studio Neumorphism (Soft Clay & Obsidian Dark) */
+
+:root {
+  /* Default: Soft Clay Studio Neumorphism (matching reference image) */
+  --bg: #E8EEF5;
+  --shadow-dark: #C0CAD7;
+  --shadow-light: #FFFFFF;
+  --text: #1C2430;
+  --muted: #64748B;
+  --you: #FF5722;       /* Vibrant sneaker orange accent */
+  --you-glow: rgba(255, 87, 34, 0.35);
+  --them: #0284C7;      /* Crisp electric ocean blue */
+  --them-glow: rgba(2, 132, 199, 0.35);
+  --heat-lo: #F59E0B;
+  --heat-hi: #EF4444;
+
+  /* Tactile Loader Tokens */
+  --primary1: #FF5722;
+  --primary2: #FF8A65;
+  --trans-dur: 0.3s;
+  --fg-t: rgba(0, 0, 0, 0.25);
+
+  --depth: 7px;         /* Crisp tactile depth */
+  --blur: calc(var(--depth) * 1.1); /* Reduced softness for sharp edges */
+
+  --raised:
+    var(--depth) var(--depth) var(--blur) var(--shadow-dark),
+    calc(var(--depth) * -1) calc(var(--depth) * -1) var(--blur) var(--shadow-light),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+
+  --inset:
+    inset calc(var(--depth) * 0.5) calc(var(--depth) * 0.5) calc(var(--blur) * 0.75) var(--shadow-dark),
+    inset calc(var(--depth) * -0.5) calc(var(--depth) * -0.5) calc(var(--blur) * 0.75) var(--shadow-light),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+
+  --raised-sm:
+    3px 3px 5px var(--shadow-dark),
+    -3px -3px 5px var(--shadow-light),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  --inset-sm:
+    inset 2px 2px 4px var(--shadow-dark),
+    inset -2px -2px 4px var(--shadow-light);
+
+  --surface-gradient: linear-gradient(145deg, #F0F5FC, #DFE7F1);
+  --surface-convex: linear-gradient(145deg, #EFF4FB, #E1E9F3);
+  --surface-concave: linear-gradient(145deg, #DFE7F1, #F0F5FC);
+
+  --radius-card: 20px;
+  --radius-panel: 24px;
+  --radius-pill: 999px;
+  --radius-btn: 16px;
+
+  --font-heading: 'Bricolage Grotesque', sans-serif;
+  --font-caption: 'Inter Tight', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --smooth-glide: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark Obsidian Theme */
+[data-theme="dark"] {
+  --bg: #1B1E26;
+  --shadow-dark: #07080B;
+  --shadow-light: #2C3241;
+  --text: #E8E6E1;
+  --muted: #9AA0AE;
+  --you: #FF8A4C;
+  --you-glow: rgba(255, 138, 76, 0.35);
+  --them: #5BC0EB;
+  --them-glow: rgba(91, 192, 235, 0.35);
+  --heat-lo: #F2C14E;
+  --heat-hi: #FF453A;
+
+  --primary1: #FF8A4C;
+  --primary2: #FFA270;
+  --fg-t: rgba(255, 255, 255, 0.35);
+
+  --raised:
+    var(--depth) var(--depth) var(--blur) var(--shadow-dark),
+    calc(var(--depth) * -1) calc(var(--depth) * -1) var(--blur) var(--shadow-light),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+
+  --inset:
+    inset calc(var(--depth) * 0.5) calc(var(--depth) * 0.5) calc(var(--blur) * 0.75) var(--shadow-dark),
+    inset calc(var(--depth) * -0.5) calc(var(--depth) * -0.5) calc(var(--blur) * 0.75) var(--shadow-light),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
+
+  --raised-sm:
+    3px 3px 5px var(--shadow-dark),
+    -3px -3px 5px var(--shadow-light),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  --inset-sm:
+    inset 2px 2px 4px var(--shadow-dark),
+    inset -2px -2px 4px var(--shadow-light);
+
+  --surface-gradient: linear-gradient(145deg, #1E222B, #181B22);
+  --surface-convex: linear-gradient(145deg, #20242E, #171A21);
+  --surface-concave: linear-gradient(145deg, #171A21, #20242E);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --depth: 8px;
+  }
+}
+
+/* Base Utility Classes */
+.nm-raised {
+  background: var(--surface-gradient);
+  box-shadow: var(--raised);
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  transition: transform 0.25s var(--smooth-glide), box-shadow 0.25s var(--smooth-glide);
+}
+
+[data-theme="dark"] .nm-raised {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.nm-inset {
+  background: var(--bg);
+  box-shadow: var(--inset);
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .nm-inset {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nm-flat {
+  background: var(--bg);
+  box-shadow: none;
+  border-radius: var(--radius-card);
+}
+
+.nm-pressed {
+  background: var(--bg) !important;
+  box-shadow: var(--inset) !important;
+  transform: scale(0.98) translateY(1px);
+}
