@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" width="100%" height="auto" fill="none">
+  <defs>
+    <!-- Background & Glass Gradients -->
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="880" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="card-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#334155" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1E293B" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="orange-stream" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FF7A50"/>
+      <stop offset="100%" stop-color="#FF3D00"/>
+    </linearGradient>
+    <linearGradient id="blue-stream" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="barge-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="glow-orange" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#FF5722" flood-opacity="0.6"/>
+    </filter>
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#0284C7" flood-opacity="0.6"/>
+    </filter>
+    <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#EF4444" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <style>
+    .mono-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "JetBrains Mono", monospace; }
+    .pulse-orange {
+      stroke-dasharray: 8 12;
+      animation: dash-forward 1.8s linear infinite;
+    }
+    .pulse-blue {
+      stroke-dasharray: 8 12;
+      animation: dash-forward 1.8s linear infinite;
+    }
+    .pulse-red {
+      stroke-dasharray: 6 10;
+      animation: dash-backward 1.4s linear infinite;
+    }
+    @keyframes dash-forward {
+      from { stroke-dashoffset: 40; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes dash-backward {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: 40; }
+    }
+    .node-title { font-weight: 700; font-size: 13px; fill: #F8FAFC; }
+    .node-sub { font-size: 11px; fill: #94A3B8; }
+    .badge-text { font-size: 10px; font-weight: 700; }
+  </style>
+
+  <!-- Container Box -->
+  <rect width="880" height="340" rx="16" fill="url(#bg-grad)" stroke="#334155" stroke-width="1"/>
+
+  <!-- Server Boundary Box -->
+  <rect x="230" y="24" width="420" height="292" rx="12" fill="#0B132B" fill-opacity="0.7" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="245" y="46" class="mono-text" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1.5">VOXERA REAL-TIME PIPELINE</text>
+
+  <!-- Connection Paths -->
+  <!-- 1. Speaker -> Server STT -->
+  <path d="M175 110 L260 110" stroke="url(#orange-stream)" stroke-width="2.5" class="pulse-orange" filter="url(#glow-orange)"/>
+  
+  <!-- 2. STT -> Segment Commit -->
+  <path d="M375 110 L415 110" stroke="#475569" stroke-width="2"/>
+
+  <!-- 3. Commit -> LLM Translation -->
+  <path d="M475 140 L475 170" stroke="#475569" stroke-width="2"/>
+
+  <!-- 4. LLM -> TTS -->
+  <path d="M475 230 L475 255" stroke="#475569" stroke-width="2"/>
+
+  <!-- 5. Server TTS -> Listener AudioContext -->
+  <path d="M540 280 L705 280" stroke="url(#blue-stream)" stroke-width="2.5" class="pulse-blue" filter="url(#glow-blue)"/>
+
+  <!-- 6. Reverse Barge-In Cutoff Path (Listener -> Server) -->
+  <path d="M705 190 L590 190 L590 200" stroke="url(#barge-grad)" stroke-width="2.5" class="pulse-red" filter="url(#glow-red)"/>
+
+  <!-- NODE 1: Speaker Client (Left) -->
+  <rect x="25" y="70" width="150" height="80" rx="10" fill="url(#card-grad)" stroke="#FF5722" stroke-width="1.5"/>
+  <circle cx="45" cy="98" r="10" fill="#FF5722" fill-opacity="0.2"/>
+  <text x="45" y="102" text-anchor="middle" font-size="11" fill="#FF5722">🎙️</text>
+  <text x="65" y="94" class="mono-text node-title">Speaker Mic</text>
+  <text x="65" y="112" class="mono-text node-sub">16kHz PCM Mono</text>
+  <text x="65" y="128" class="mono-text" font-size="10" fill="#FF7A50">AudioWorklet</text>
+
+  <!-- NODE 2: STT Engine (Server) -->
+  <rect x="260" y="80" width="115" height="60" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="272" y="104" class="mono-text node-title">STT Stream</text>
+  <text x="272" y="122" class="mono-text node-sub">Deepgram / Mock</text>
+
+  <!-- NODE 3: Segment Commit (Server) -->
+  <rect x="415" y="80" width="120" height="60" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="427" y="104" class="mono-text node-title">Commit Logic</text>
+  <text x="427" y="122" class="mono-text node-sub">&gt;=3 words / punct</text>
+
+  <!-- NODE 4: LLM Translation Engine (Server) -->
+  <rect x="410" y="170" width="130" height="60" rx="8" fill="#1E293B" stroke="#6366F1" stroke-width="1.5"/>
+  <text x="422" y="194" class="mono-text node-title">LLM Interpreter</text>
+  <text x="422" y="212" class="mono-text node-sub">Claude / OpenRouter</text>
+
+  <!-- NODE 5: Streaming TTS (Server) -->
+  <rect x="410" y="255" width="130" height="50" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="1"/>
+  <text x="422" y="278" class="mono-text node-title">TTS Stream</text>
+  <text x="422" y="294" class="mono-text node-sub">ElevenLabs Flash</text>
+
+  <!-- NODE 6: Listener Web AudioContext (Right Bottom) -->
+  <rect x="705" y="240" width="150" height="75" rx="10" fill="url(#card-grad)" stroke="#0284C7" stroke-width="1.5"/>
+  <circle cx="725" cy="268" r="10" fill="#0284C7" fill-opacity="0.2"/>
+  <text x="725" y="272" text-anchor="middle" font-size="11" fill="#38BDF8">🔊</text>
+  <text x="745" y="264" class="mono-text node-title">AudioContext</text>
+  <text x="745" y="282" class="mono-text node-sub">SegmentPlayer</text>
+  <text x="745" y="298" class="mono-text" font-size="10" fill="#38BDF8">Scheduled Nodes</text>
+
+  <!-- NODE 7: Client-Side Barge-In Detector (Right Top) -->
+  <rect x="705" y="150" width="150" height="75" rx="10" fill="url(#card-grad)" stroke="#EF4444" stroke-width="1.5"/>
+  <circle cx="725" cy="178" r="10" fill="#EF4444" fill-opacity="0.2"/>
+  <text x="725" y="182" text-anchor="middle" font-size="11" fill="#EF4444">⚡</text>
+  <text x="745" y="174" class="mono-text node-title">Barge-In Detector</text>
+  <text x="745" y="192" class="mono-text node-sub">&lt; 150ms Cutoff</text>
+  <text x="745" y="208" class="mono-text" font-size="10" fill="#EF4444">Instant Audio Halt</text>
+
+  <!-- Latency Badge -->
+  <rect x="365" y="12" width="150" height="22" rx="11" fill="#10B981" fill-opacity="0.15" stroke="#10B981" stroke-width="1"/>
+  <text x="440" y="27" text-anchor="middle" class="mono-text badge-text" fill="#34D399">SUB-150ms LATENCY</text>
+</svg>

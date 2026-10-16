@@ -1,82 +1,72 @@
-# Voxera ⚡
+# Voxera
 
-**Real-time full-duplex speech translation and debate interpreter for natural, continuous cross-language conversation.**
+### Real-time speech translation for conversations that don't wait for their turn.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18.3-61dafb)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-22.x-green)](https://nodejs.org/)
+Voxera is a real-time, full-duplex speech translation and debate interpreter built for natural, continuous cross-language conversations. Both participants can speak simultaneously, interrupt one another, and correct themselves without losing the flow of conversation.
 
-**Author:** [Ankit Kumar](https://github.com/arsonic-dev)  
-**GitHub:** [@arsonic-dev](https://github.com/arsonic-dev)  
-**Repository:** [https://github.com/arsonic-dev/Voxera](https://github.com/arsonic-dev/Voxera)
+<p align="center">
+  <img src="docs/media/voxera-demo.gif" alt="Voxera real-time product demonstration: landing, language selection, live debate, sub-150ms barge-in cutoff, and self-correction retraction" width="100%" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/arsonic-dev/Voxera">
+    <img src="https://img.shields.io/badge/Project-Voxera-FF5722?style=for-the-badge&logoColor=white" alt="Voxera project" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-0284C7?style=for-the-badge" alt="MIT License" />
+  </a>
+  <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+</p>
 
 ---
 
-## Overview
+## Why Voxera?
 
-Traditional translation tools require rigid turn-taking, suppress emotion, and fail during spontaneous conversation when speakers interrupt or talk over one another.
+Most translation tools are designed around taking turns: one person speaks, the other waits, and the conversation loses its natural rhythm.
 
-**Voxera** breaks this paradigm. Designed specifically for high-intensity debates and conversations between speakers with no common language, it enables:
-- **Instant Full-Duplex Dialogue:** Both participants can speak simultaneously.
-- **Sub-150ms Client-Side Barge-In:** Starting to speak immediately halts incoming audio on your device, preventing overlapping speech loops.
-- **Accurate Interruption Tracking:** Both screens render a precise red cutoff marker showing the exact word heard before an interruption occurred.
-- **Real-Time Mind-Change Retraction:** Self-corrections ("no wait", "I mean", "forget that") automatically retract prior pending audio and strike through previous statements.
-- **Acoustic & Dynamic Heat Scaling:** Captures pace, volume, and emotional intensity without flattening or softening expressions.
+Voxera is designed for a completely different experience. It supports spontaneous conversations where speakers interrupt, react, disagree, and change their minds in real time.
+
+> **The goal is to preserve the conversation, not just translate the words.**
+
+---
+
+## Core Capabilities
+
+| Feature | What it does |
+| --- | --- |
+| **Full-Duplex Dialogue** | Both participants can speak simultaneously without rigid turn-taking or collisions. |
+| **Sub-150ms Barge-In** | Local voice energy detection halts incoming audio playback the instant the listener speaks. |
+| **Heard Interruption Tracking** | Pinpoints and displays the exact portion of translated speech heard before an interruption. |
+| **Mind-Change Retractions** | Automatically detects self-corrections ("no wait...", "I mean...") and marks prior claims as taken back. |
+| **Dynamic Heat & Emotion** | Captures pace, volume, and emotional intensity without flattening or softening dialogue. |
+| **Zero-Key Offline Fakes** | Deterministic mock engines allow offline development, simulation, and testing with zero API keys. |
 
 ---
 
 ## Studio Neumorphism Interface
 
-| Soft Clay Light Mode | Obsidian Dark Mode |
-| :---: | :---: |
-| ![Light Mode](docs/screens/landing-desktop.png) | ![Dark Mode](docs/screens/landing-desktop-dark.png) |
+Voxera features a tactile, dual-theme interface designed with subtle directional lighting, crisp raised and inset surfaces, and responsive micro-animations.
 
-| Real-Time Debate Room | Mobile Experience (Responsive 360px+) |
+| Soft Clay (Light Mode) | Obsidian (Dark Mode) |
 | :---: | :---: |
-| ![Debate Room Stage](docs/screens/room-desktop.png) | ![Debate Room Mobile](docs/screens/room-mobile.png) |
+| <img src="docs/screens/landing-desktop.png" alt="Voxera Soft Clay Light Mode" width="100%" /> | <img src="docs/screens/landing-desktop-dark.png" alt="Voxera Obsidian Dark Mode" width="100%" /> |
+
+| Real-Time Debate Room Stage | Mobile Responsive (360px+) |
+| :---: | :---: |
+| <img src="docs/screens/room-desktop.png" alt="Voxera Debate Room Stage" width="100%" /> | <img src="docs/screens/room-mobile.png" alt="Voxera Mobile Debate Room" width="100%" /> |
 
 ---
 
-## Pipeline Architecture
+## Architecture & Real-Time Flow
 
-```
-                                  VOXERA SERVER
-                           ┌───────────────────────────────────────────────┐
-                           │                                               │
-Speaker Mic                │  ┌──────────────┐      ┌───────────────────┐  │
-(16kHz PCM mono) ─WS Audio─►│  │  STT Stream  │      │  Segment Commit   │  │
-via AudioWorklet           │  │(Deepgram/Fake│─────►│ (>=3 words/punct/ │  │
-                           │  └──────────────┘      │   speech_final)   │  │
-                           │                        └─────────┬─────────┘  │
-                           │                                  │            │
-                           │                                  ▼            │
-                           │                        ┌───────────────────┐  │
-                           │                        │  LLM Interpreter  │  │
-                           │                        │  (Claude / OpenR) │  │
-                           │                        └─────────┬─────────┘  │
-                           │                                  │            │
-                           │                                  ▼            │
-                           │                        ┌───────────────────┐  │
-                           │                        │   TTS Streaming   │  │
-                           │                        │(ElevenLabs Flash) │  │
-                           │                        └─────────┬─────────┘  │
-                           │                                  │            │
-                           └──────────────────────────────────┼────────────┘
-                                                              │
-                                                    WebSocket Audio Chunks
-                                                              │
-                                                              ▼
-                                                  Listener Web AudioContext
-                                                  (SegmentPlayer scheduled nodes)
-                                                              │
-                                                     Local Mic Energy Check
-                                                              ▼
-                                                  BargeInDetector (< 150ms)
-                                                  halts playback & syncs server
-```
+Voxera separates microphone capture, speech recognition, translation, audio synthesis, and playback so that interruption handling remains instantaneous.
 
-### Sequence Flow
+<p align="center">
+  <img src="docs/media/voxera-pipeline.svg" alt="Voxera Real-Time Pipeline Architecture and Event Flow" width="100%" />
+</p>
+
+### End-to-End Sequence Flow
 
 ```mermaid
 sequenceDiagram
@@ -104,104 +94,167 @@ sequenceDiagram
 
 ---
 
-## Key Features & Mechanics
+## Technical Highlights
 
-### 1. Client-Side Barge-In Detection
-- Runs locally in `web/src/audio/bargeIn.ts` evaluating mic RMS energy frames with a 150ms sustained voice threshold.
-- Threshold dynamically scales during active playback to prevent speaker echo feedback.
-- Halts Web Audio playback immediately (< 150ms) without waiting for network round-trips.
+### 1. Client-Side Barge-In & Heard Tracking
 
-### 2. Precise Heard Word Calculation
-- Server calculates played fraction `pct = min(1.0, max(0.0, playedMs / totalMs))`.
-- Words are sliced accurately across boundaries: `heardText = words.slice(0, round(words.length * pct)).join(' ')`.
-- Both interfaces render a crisp 2px red indicator marking the cutoff point, dimming unvoiced remainder text.
+Implemented in `web/src/audio/bargeIn.ts`.
 
-### 3. Mind-Change Retractions
-- Natural self-correction phrases ("no wait", "I mean", "forget that", "quise decir") are identified in the streaming LLM header.
-- If pending in playback queue, target segment is cancelled immediately (`{ t: "cancel", reason: "retracted" }`).
-- Already-played items receive a visual strike-through and a **TAKEN BACK** badge.
+<p align="center">
+  <img src="docs/media/barge-in-cutoff.gif" alt="Voxera Sub-150ms Barge-In and Interruption Cutoff Demonstration" width="85%" />
+</p>
 
-### 4. Zero-Key Fallback Mode
-- Automatic deterministic mock engines (`FakeStt`, `FakeTranslator`, `FakeTts`) activate if vendor API keys are absent, enabling complete local development and testing offline.
+- **Instant Audio Cutoff (< 150ms):** Evaluates microphone RMS energy locally on the listener's device. When sustained voice energy is detected, it stops Web Audio playback immediately without waiting for a server round-trip.
+- **Feedback Isolation:** Automatically elevates energy threshold by 50% during active playback to prevent speaker bleed false-triggers.
+- **Exact Heard Boundary:** The server calculates the exact played fraction:
+  ```ts
+  const pct = Math.min(1.0, Math.max(0.0, playedMs / totalMs));
+  const words = fullText.split(' ');
+  const heardText = words.slice(0, Math.round(words.length * pct)).join(' ');
+  ```
+  Both screens render a red laser groove marker at the exact cutoff point with unheard remainder text dimmed to 40% opacity.
+
+### 2. Mind-Change Retractions
+
+Conversations naturally contain corrections and course changes:
+- *"No wait, forget that number..."*
+- *"I mean, look at section 4 instead..."*
+- *"Strike that..."*
+
+When a correction is detected:
+1. If the target audio is still queued, the server sends `{ t: "cancel", reason: "retracted" }` and the listener's player drops it before playback starts.
+2. If already voiced, the previous statement transitions into a strikethrough with a red **TAKEN BACK** badge, and the corrected thought streams in smoothly.
+
+### 3. Deterministic Zero-Key Mock Engine
+
+When third-party API keys are not supplied, Voxera automatically falls back to internal mock engines:
+- `FakeStt`: Generates realistic interim and committed speech streams with timing endpoints.
+- `FakeTranslator`: Deterministically produces unsoftened translations and structured JSON metadata.
+- `FakeTts`: Streams clean 16kHz PCM audio buffers with matching word cadence.
+
+Enables instant local setup, automated unit testing, and Playwright verification without requiring external API credentials.
 
 ---
 
 ## Supported Languages
 
-Voxera supports real-time two-way translation across:
-- **English** (`en`)
-- **Hindi** (`hi`)
-- **Spanish** (`es`)
-- **French** (`fr`)
-- **German** (`de`)
-- **Portuguese** (`pt`)
-- **Italian** (`it`)
-- **Russian** (`ru`)
+Voxera supports bidirectional full-duplex translation across 8 languages:
+
+| Language | Code | Native Name |
+| --- | :---: | --- |
+| **English** | `en` | English |
+| **Hindi** | `hi` | हिन्दी |
+| **Spanish** | `es` | Español |
+| **French** | `fr` | Français |
+| **German** | `de` | Deutsch |
+| **Portuguese** | `pt` | Português |
+| **Italian** | `it` | Italiano |
+| **Russian** | `ru` | Русский |
+
+---
+
+## Technology Stack
+
+| Layer | Component | Technology |
+| --- | --- | --- |
+| **Frontend** | Framework | React 18.3, Vite 6, TypeScript 5.7 |
+| **Audio** | Capture & Playback | Web Audio API, AudioWorklet (16kHz PCM mono) |
+| **Styling** | Visual System | Vanilla CSS (Dark Neumorphism & Soft Clay) |
+| **Backend** | WebSocket Server | Node.js 22, `ws`, In-Memory Session Manager |
+| **Speech-to-Text** | STT Provider | Deepgram Nova-3 / Nova-2 (or `FakeStt`) |
+| **Translation** | LLM Engine | Anthropic Claude / OpenRouter (or `FakeTranslator`) |
+| **Text-to-Speech** | Streaming Audio | ElevenLabs Flash v2.5 (or `FakeTts`) |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 20+
-- npm 10+
+
+- **Node.js** 20 or newer
+- **npm** 10 or newer
+
+```bash
+node --version
+npm --version
+```
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/arsonic-dev/Voxera.git
 cd Voxera
 
-# Install dependencies
+# Install dependencies across all workspaces
 npm install
 
-# Configure environment variables
+# Copy environment configuration
 cp .env.example .env
 ```
 
 ### Environment Configuration
 
-In `.env`:
+Configure credentials in `.env`:
+
 ```env
 PORT=8080
-DEEPGRAM_API_KEY=your_deepgram_key      # Speech-to-Text
-ANTHROPIC_API_KEY=your_anthropic_key    # LLM Translation (or OpenRouter key)
-ELEVENLABS_API_KEY=your_elevenlabs_key  # Streaming TTS
+
+# Speech-to-Text
+DEEPGRAM_API_KEY=your_deepgram_key
+
+# LLM Translation
+ANTHROPIC_API_KEY=your_anthropic_key
+# Or use OpenRouter:
+OPENROUTER_API_KEY=your_openrouter_key
+OPENROUTER_MODEL=anthropic/claude-3.5-haiku
+
+# Streaming Text-to-Speech
+ELEVENLABS_API_KEY=your_elevenlabs_key
 ```
-*(Leave empty to run in deterministic offline fake mode)*
+
+*(Leave API keys empty to run automatically in offline deterministic mock mode)*
 
 ### Running Locally
 
 ```bash
-# Start both server and frontend dev server
+# Start both server and web frontend dev servers
 npm run dev
 
-# Or build and launch production bundle
+# Or build and launch the production release
 npm run build
 npm start
 ```
-Open [http://localhost:5173](http://localhost:5173) (Dev) or [http://localhost:8080](http://localhost:8080) (Prod).
+
+- **Frontend (Vite):** `http://localhost:5173`
+- **Full-Stack Server:** `http://localhost:8080`
 
 ---
 
 ## Testing & Verification
 
 ```bash
-# Run server test suite
+# Run backend test suite (rooms, STT, translation, barge-in, retraction, hardening)
 npm test
 
-# Run contrast audit (WCAG 2.1 AA)
+# Run WCAG 2.1 AA contrast ratio audit
 npx tsx scripts/contrast.ts
 
-# Run simulated debate conversation
+# Run simulated debate conversation (all 6 retraction cases)
 npx tsx scripts/sim.ts
+
+# Capture Playwright automated screenshot suite
+npx tsx scripts/screenshot.ts
 ```
 
 ---
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+Voxera is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
-Developed with passion by **Ankit Kumar** ([@arsonic-dev](https://github.com/arsonic-dev)).
+## Author
+
+**Ankit Kumar**  
+- **GitHub:** [@arsonic-dev](https://github.com/arsonic-dev)  
+- **Repository:** [https://github.com/arsonic-dev/Voxera](https://github.com/arsonic-dev/Voxera)

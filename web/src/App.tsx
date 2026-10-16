@@ -65,7 +65,7 @@ export default function App() {
   const [isJoining, setIsJoining] = useState<boolean>(false);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.get('no_intro') !== '1';
+    return params.get('no_intro') !== '1' && params.get('demo') !== '1';
   });
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [isReconnecting, setIsReconnecting] = useState<boolean>(false);
@@ -173,6 +173,124 @@ export default function App() {
       ]);
     }
 
+    if (params.get('demo') === '1') {
+      setIsInitialLoading(false);
+      const timers: NodeJS.Timeout[] = [];
+      setScreen('landing');
+
+      timers.push(setTimeout(() => {
+        setRoomId('VOX88');
+        setScreen('join');
+      }, 1400));
+
+      timers.push(setTimeout(() => {
+        setName('Alex');
+        setLang('en');
+        setHeadphonesChecked(true);
+      }, 2200));
+
+      timers.push(setTimeout(() => {
+        setIsJoining(true);
+      }, 3000));
+
+      timers.push(setTimeout(() => {
+        setIsJoining(false);
+        setScreen('room');
+        setPeer({ id: 'peer-elena', name: 'Elena', lang: 'es', online: true });
+        setCaptions([
+          {
+            utteranceId: 'd1',
+            segmentId: 'd1',
+            speaker: 'them',
+            srcText: 'No puedes ignorar los datos que te acabo de enviar.',
+            trText: 'You cannot ignore the data I just sent you.',
+            final: true,
+            intensity: 0.65,
+            emotion: 'firm',
+            retracted: false,
+            interrupted: false,
+          }
+        ]);
+      }, 3600));
+
+      timers.push(setTimeout(() => {
+        setCaptions((prev) => [
+          ...prev,
+          {
+            utteranceId: 'd2',
+            segmentId: 'd2',
+            speaker: 'them',
+            srcText: '¡Eso es completamente inaceptable y lo sabes...',
+            trText: 'That is completely unacceptable and you know it very well!',
+            final: false,
+            intensity: 0.85,
+            emotion: 'angry',
+            retracted: false,
+            interrupted: false,
+          }
+        ]);
+      }, 5000));
+
+      timers.push(setTimeout(() => {
+        setCaptions((prev) => [
+          prev[0],
+          {
+            utteranceId: 'd2',
+            segmentId: 'd2',
+            speaker: 'them',
+            srcText: '¡Eso es completamente inaceptable y lo sabes muy bien!',
+            trText: 'That is completely unacceptable and you know it very well!',
+            final: true,
+            intensity: 0.85,
+            emotion: 'angry',
+            retracted: false,
+            interrupted: true,
+            heardText: 'That is completely unacceptable',
+            pct: 0.45,
+          },
+          {
+            utteranceId: 'd3',
+            segmentId: 'd3',
+            speaker: 'you',
+            srcText: 'Wait! The audit numbers were verified by finance this morning!',
+            trText: '¡Espera! ¡Las cifras de auditoría fueron verificadas por finanzas!',
+            final: true,
+            intensity: 0.9,
+            emotion: 'heated',
+            retracted: false,
+            interrupted: false,
+          }
+        ]);
+      }, 6400));
+
+      timers.push(setTimeout(() => {
+        setCaptions((prev) => [
+          prev[0],
+          prev[1],
+          {
+            ...prev[2],
+            retracted: true,
+          },
+          {
+            utteranceId: 'd4',
+            segmentId: 'd4',
+            speaker: 'you',
+            srcText: 'No wait, forget that number, let me check the revised sheet.',
+            trText: 'No espera, olvida ese número, déjame revisar la hoja revisada.',
+            final: true,
+            intensity: 0.5,
+            emotion: 'calm',
+            retracted: false,
+            interrupted: false,
+          }
+        ]);
+      }, 8200));
+
+      return () => {
+        timers.forEach((t) => clearTimeout(t));
+      };
+    }
+
     if (params.get('hud') === '1') {
       setHudActive(true);
     }
@@ -192,9 +310,14 @@ export default function App() {
       .catch(() => {});
 
     // Show 3D tactile loading screen on initial load/reload
-    const introTimer = setTimeout(() => {
+    let introTimer: NodeJS.Timeout | undefined;
+    if (params.get('demo') !== '1' && params.get('no_intro') !== '1') {
+      introTimer = setTimeout(() => {
+        setIsInitialLoading(false);
+      }, 1800);
+    } else {
       setIsInitialLoading(false);
-    }, 1800);
+    }
 
     return () => {
       clearTimeout(introTimer);
