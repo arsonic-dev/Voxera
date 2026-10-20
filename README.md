@@ -76,20 +76,20 @@ sequenceDiagram
     participant B as Listener B (Speaker)
 
     A->>S: 16 kHz PCM frames (100ms)
-    S-->>A: Live interim source captions {t: "src"}
-    Note over S: Segment Commit (>=3 words or punctuation)
-    S->>S: LLM Stream Header: {intensity, emotion, retracts}
-    S-->>A: Translated caption {t: "tr"}
-    S-->>B: Translated caption {t: "tr"}
-    S->>B: Streamed audio chunks {t: "audio"}
+    S-->>A: Live interim source captions
+    Note over S: Segment Commit (3+ words or punctuation)
+    S->>S: LLM Stream Header (intensity, emotion, retracts)
+    S-->>A: Translated caption
+    S-->>B: Translated caption
+    S->>B: Streamed audio chunks
     Note over B: Audio playback begins
     B->>B: Listener starts speaking (sustained voice >= 150ms)
     Note over B: Local Barge-In: Audio stops immediately
-    B->>S: Barge-in event {t: "barge_in", playedMs, totalMs}
-    S->>S: Abort TTS & LLM; compute heardText = words * pct
-    S-->>A: Heard event {t: "heard", heardText, pct}
-    S-->>B: Heard event {t: "heard", heardText, pct}
-    Note over A,B: Red marker rendered; unheard text dimmed
+    B->>S: Barge-in event (playedMs, totalMs)
+    Note over S: Abort TTS and LLM, calculate heardText = words * pct
+    S-->>A: Heard event (heardText, pct)
+    S-->>B: Heard event (heardText, pct)
+    Note over A,B: Red marker rendered, unheard text dimmed
 ```
 
 ---
